@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LightRender — Simulación de iluminación 3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="hero">
+  <nav>
+    <div class="brand">
+      <div class="brand-mark">L</div>
+      <div>
+        <p class="brand-name">LightRender</p>
+        <p class="brand-tag">Simulación de iluminación 3D</p>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Características</a></li>
+      <li><a href="#how-it-works">Cómo funciona</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero-inner">
+    <div>
+      <p class="eyebrow">Plataforma web para empresas tecnológicas y de iluminación</p>
+      <h1 class="hero-h1">Visualiza cómo cambia la <span>luz</span> antes de comprar o implementar una solución.</h1>
+      <p class="hero-lead">LightRender permite explorar una bombilla en un entorno 3D interactivo, comparar opciones y comprender el efecto de la iluminación en tiempo real desde el navegador.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" href="#demo">Ver demostración</a>
+        <a class="btn-secondary" href="#proposal">Conocer la propuesta</a>
+      </div>
+      <div class="hero-badges">
+        <span class="badge">3D interactivo</span>
+        <span class="badge">Visualización en tiempo real</span>
+        <span class="badge">Enfoque empresarial</span>
+      </div>
+    </div>
+
+    <div class="scene-wrap" id="demo">
+      <div class="preview-window">
+        <div class="preview-topbar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <div class="preview-scene">
+          <div class="ceiling"></div>
+          <div class="lamp-wire"></div>
+          <div class="lamp-bulb">
+            <div class="bulb-glass"></div>
+            <div class="bulb-neck"></div>
+            <div class="bulb-base"></div>
+          </div>
+          <div class="light-beam"></div>
+          <div class="room-floor">
+            <div class="floor-spot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Características ── -->
+<main>
+  <section class="section" id="features">
+    <p class="section-kicker">Características principales</p>
+    <h2 class="section-h2">Todo lo que necesitas para presentar tu producto de iluminación</h2>
+    <p class="section-lead">Una plataforma diseñada para que empresas e integradores puedan mostrar sus productos de manera interactiva y convincente.</p>
+    <div class="cards">
+      <article class="card">
+        <div class="card-icon" style="background: rgba(245,166,35,0.1);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="8" r="5" stroke="#f5a623" stroke-width="1.5"/>
+            <path d="M10 13v4M7 17h6" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Simulación clara</h3>
+        <p>Permite mostrar la intensidad y el comportamiento de la luz en un espacio tridimensional simple y comprensible.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" style="background: rgba(55,138,221,0.1);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="3" width="16" height="12" rx="2" stroke="#378ADD" stroke-width="1.5"/>
+            <path d="M7 18h6" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 15v3" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Experiencia visual</h3>
+        <p>El usuario puede explorar el modelo, observar cambios y comparar configuraciones de iluminación en tiempo real.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon" style="background: rgba(29,158,117,0.1);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 14L8 9l4 4 6-7" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Valor comercial</h3>
+        <p>Herramienta de apoyo para empresas que desean presentar productos de iluminación de forma más atractiva y efectiva.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Como funciona -->
+  <div class="how-wrap" id="how-it-works">
+    <div class="how-inner">
+      <div class="split">
+        <div class="split-copy">
+          <p class="section-kicker">Cómo se presenta el proyecto</p>
+          <h2 class="section-h2">Una solución que combina visualización, interacción y enfoque de negocio.</h2>
+          <p>El sistema está pensado para mostrar una bombilla en un entorno 3D y permitir la modificación de parámetros visuales como color, intensidad y estado de encendido. La idea es que el usuario entienda mejor el producto antes de tomar una decisión.</p>
+        </div>
+        <div class="steps" id="proposal">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <h3>Visualización</h3>
+              <p>Modelo 3D de la bombilla dentro de una escena sencilla y limpia.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <h3>Interacción</h3>
+              <p>Controles para cambiar variables de iluminación y ver el efecto en pantalla.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <h3>Aplicación real</h3>
+              <p>Propuesta pensada para empresas tecnológicas, e-commerce y tiendas de iluminación.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-wrap" id="contact">
+    <div class="cta-box">
+      <div>
+        <p class="cta-kicker">Proyecto académico con proyección comercial</p>
+        <h2 class="cta-h2">LightRender busca demostrar que una experiencia web puede vender una idea tecnológica.</h2>
+      </div>
+      <a class="btn-primary" href="#top">Volver arriba</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>LightRender · Proyecto de simulación de iluminación en tiempo real</p>
+</footer>
+
+</body>
+</html>
