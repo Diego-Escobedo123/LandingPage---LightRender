@@ -4,11 +4,12 @@ import { TechnologiesComponent } from './components/technologies/technologies';
 import { AudienceComponent } from './components/audience/audience';
 import { BusinessComponent } from './components/business/business';
 import { PurposeComponent } from './components/purpose/purpose';
+import { FutureComponent } from './components/future/future';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent],
+  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent, FutureComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
