@@ -5,11 +5,12 @@ import { AudienceComponent } from './components/audience/audience';
 import { BusinessComponent } from './components/business/business';
 import { PurposeComponent } from './components/purpose/purpose';
 import { FutureComponent } from './components/future/future';
+import { CtaComponent } from './components/cta/cta';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent, FutureComponent],
+  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent, FutureComponent, CtaComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
