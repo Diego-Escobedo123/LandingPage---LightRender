@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LightRender — Simulación PBR</title>
+    <style>
+        body { margin: 0; background-color: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        canvas { width: 100vw; height: 100vh; display: block; }
+        
+        /* Estilo para el panel de control */
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(20, 20, 20, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            width: 220px;
+            user-select: none;
+        }
+        h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: #ff8800; }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background: #666; }
+        .control-group { margin-top: 20px; }
+        input[type=range] { width: 100%; cursor: pointer; accent-color: #ff8800; }
+        .val { font-weight: bold; color: #ff8800; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h3>LightRender Engine</h3>
+        <button id="toggleBtn">💡 Encender Luz</button>
+        
+        <div class="control-group">
+            <label>Potencia: <span id="wattVal" class="val">10</span> W</label>
+            <input type="range" id="wattRange" min="0" max="200" value="10">
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        document.body.appendChild(renderer.domElement);
+
+        const roomSize = 10;
+        const roomGeo = new THREE.BoxGeometry(roomSize, roomSize, roomSize);
+        const roomMat = new THREE.MeshStandardMaterial({ 
+            color: 0xcccccc, 
+            side: THREE.BackSide,
+            roughness: 1.0
+        });
+        const room = new THREE.Mesh(roomGeo, roomMat);
+        scene.add(room);
+
+        const bulbLight = new THREE.PointLight(0xffffff, 0, 100, 2); 
+        bulbLight.position.set(0, 4, 0);
+        scene.add(bulbLight);
+
+        const bulbGeo = new THREE.SphereGeometry(0.1, 16, 16);
+        const bulbMat = new THREE.MeshBasicMaterial({ color: 0x444444 });
+        const bulbMesh = new THREE.Mesh(bulbGeo, bulbMat);
+        bulbMesh.position.copy(bulbLight.position);
+        scene.add(bulbMesh);
+
+        const ambient = new THREE.AmbientLight(0xffffff, 0.02);
+        scene.add(ambient);
+
+        camera.position.set(0, 0, 8);
+
+        let lightOn = false;
+        let watts = 10;
+
+        const toggleBtn = document.getElementById('toggleBtn');
+        const wattRange = document.getElementById('wattRange');
+        const wattVal = document.getElementById('wattVal');
+
+        function updateIllumination() {
+            if (lightOn) {
+                bulbLight.intensity = watts * 2.0; 
+                bulbMat.color.setHex(0xffffaa);
+                toggleBtn.innerText = "Apagar Luz";
+                toggleBtn.style.background = "#ff8800";
+            } else {
+                bulbLight.intensity = 0;
+                bulbMat.color.setHex(0x444444);
+                toggleBtn.innerText = "Encender Luz";
+                toggleBtn.style.background = "#444";
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            lightOn = !lightOn;
+            updateIllumination();
+        });
+
+        wattRange.addEventListener('input', (e) => {
+            watts = e.target.value;
+            wattVal.innerText = watts;
+            updateIllumination();
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

@@ -7,11 +7,12 @@ import { PurposeComponent } from './components/purpose/purpose';
 import { FutureComponent } from './components/future/future';
 import { CtaComponent } from './components/cta/cta';
 import { FooterComponent } from './components/footer/footer';
+import { BotonSimuladorComponent } from './components/boton-simulador/boton-simulador';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent, FutureComponent, CtaComponent, FooterComponent],
+  imports: [HeroComponent, TechnologiesComponent, AudienceComponent, BusinessComponent, PurposeComponent, FutureComponent, CtaComponent, FooterComponent, BotonSimuladorComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
