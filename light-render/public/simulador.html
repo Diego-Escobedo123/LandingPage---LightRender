@@ -147,7 +147,8 @@
             bulbMesh.material.color.copy(bulbLight.color);
         }
 
-        const API_URL = "http://localhost:3000/api";
+        // --- CAMBIO REALIZADO AQUÍ: DE LOCALHOST A RENDER ---
+        const API_URL = "https://landingpage-lightrender.onrender.com/api";
 
         // 1. LOGIN
         document.getElementById('loginBtn').onclick = async () => {
@@ -161,7 +162,7 @@
             } else { alert("Usuario o clave incorrectos."); }
         };
 
-        // 2. GUARDAR (MODIFICADO PARA ENVIAR TODO)
+        // 2. GUARDAR
         document.getElementById('saveBtn').onclick = async () => {
             const nombre = document.getElementById('sceneName').value;
             if(!nombre) return alert("Ponle un nombre a la escena");
@@ -184,7 +185,7 @@
             } catch (err) { alert("Error al guardar"); }
         };
 
-        // 3. CARGAR (CORREGIDO PARA ACTUALIZAR VARIABLES Y LUZ)
+        // 3. CARGAR
         document.getElementById('loadBtn').onclick = async () => {
             try {
                 const response = await fetch(`${API_URL}/escenas`);
@@ -192,13 +193,11 @@
                 if(escenas.length > 0) {
                     const ultima = escenas[escenas.length - 1];
                     
-                    // ACTUALIZAR VARIABLES GLOBALES
                     watts = ultima.watts;
                     mode = ultima.mode;
                     selectedColor = ultima.selectedColor;
                     sensibilidad = ultima.sensibilidad || 1.0;
                     
-                    // ACTUALIZAR INTERFAZ
                     document.getElementById('wattRange').value = watts;
                     document.getElementById('wattVal').innerText = watts;
                     document.getElementById('calcMode').value = mode;
@@ -207,7 +206,6 @@
                     document.getElementById('sensVal').innerText = sensibilidad;
                     document.getElementById('sensContainer').style.display = (mode === 'luminosa') ? 'block' : 'none';
 
-                    // ENCENDER LUZ AUTOMÁTICAMENTE PARA VER EL CAMBIO
                     lightOn = true;
                     const toggleBtn = document.getElementById('toggleBtn');
                     toggleBtn.innerText = "Apagar Luz";
@@ -235,6 +233,10 @@
         document.getElementById('wattRange').oninput = (e) => {
             watts = e.target.value;
             document.getElementById('wattVal').innerText = watts;
+            updateIllumination();
+        };
+        document.getElementById('wattRange').onchange = (e) => {
+            watts = e.target.value;
             updateIllumination();
         };
         document.getElementById('sensRange').oninput = (e) => {
