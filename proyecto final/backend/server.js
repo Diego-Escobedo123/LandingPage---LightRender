@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const SECRET_KEY = "tu_clave_secreta_super_pro";
 
 // MIDDLEWARES
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // CONEXIÓN A MONGODB
-mongoose.connect('mongodb://127.0.0.1:27017/lightrender_db')
+mongoose.connect('mongodb+srv://pedrolinares_db_user:2pTbYJjQ59Bo4QA9@proyectolightrender.md9dyqj.mongodb.net/?appName=ProyectoLightRender')
   .then(() => console.log("Conectado a MongoDB"))
   .catch(err => console.error("Error de conexión", err));
 
