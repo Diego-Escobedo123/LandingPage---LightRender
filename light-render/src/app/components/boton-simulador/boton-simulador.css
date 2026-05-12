@@ -1,0 +1,16 @@
+.btn-pbr {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #d35400;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-pbr:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+  }

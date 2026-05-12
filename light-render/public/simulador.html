@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LightRender — Lab Experimental</title>
+    <style>
+        body { margin: 0; background-color: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        canvas { width: 100vw; height: 100vh; display: block; }
+        
+        #ui {
+            position: absolute; top: 20px; left: 20px;
+            background: rgba(25, 25, 25, 0.95); color: white;
+            padding: 20px; border-radius: 12px; border: 1px solid #444;
+            width: 280px; user-select: none; max-height: 90vh; overflow-y: auto;
+        }
+        h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: #ff8800; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        h4 { margin: 20px 0 10px 0; font-size: 0.9rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .control-group { margin-top: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #ccc; }
+        
+        button {
+            width: 100%; padding: 10px; background: #444; color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 5px;
+        }
+        button:hover { background: #555; }
+        button.primary { background: #ff8800; color: #000; }
+        
+        input[type=text], input[type=password], select, input[type=range] { 
+            width: 100%; box-sizing: border-box; cursor: pointer; accent-color: #ff8800; 
+        }
+        input[type=text], input[type=password], select {
+            background: #111; color: white; border: 1px solid #444; padding: 8px; border-radius: 4px; margin-bottom: 10px;
+        }
+        .val-container { float: right; font-weight: bold; color: #ff8800; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h3>LightRender Engine</h3>
+        
+        <div id="loginSection">
+            <h4>Acceso Administrador</h4>
+            <input type="text" id="userInp" placeholder="Usuario">
+            <input type="password" id="passInp" placeholder="Contraseña">
+            <button id="loginBtn" class="primary">Iniciar Sesión</button>
+        </div>
+
+        <div id="controlsSection">
+            <h4>Simulador</h4>
+            <button id="toggleBtn">Encender Luz</button>
+            
+            <div class="control-group">
+                <label>Modo de Iluminación:</label>
+                <select id="calcMode">
+                    <option value="radiante">Radiométrico</option>
+                    <option value="luminosa">Fotométrico</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Color de Fuente:</label>
+                <select id="lightColor">
+                    <option value="white">Blanca</option>
+                    <option value="red">Roja</option>
+                    <option value="green">Verde</option>
+                    <option value="blue">Azul</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Potencia: 
+                    <span class="val-container">
+                        <span id="wattVal">10</span> <span id="unit">W</span>
+                    </span>
+                </label>
+                <input type="range" id="wattRange" min="0" max="200" value="10">
+            </div>
+
+            <div class="control-group" id="sensContainer" style="display:none;">
+                <label>Sensibilidad Ocular: <span id="sensVal" class="val-container">1.0</span></label>
+                <input type="range" id="sensRange" min="0.1" max="1" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div id="dbSection" class="hidden">
+            <h4>Escenas</h4>
+            <input type="text" id="sceneName" placeholder="Nombre de la escena">
+            <button id="saveBtn">Guardar Escena</button>
+            <button id="loadBtn">Cargar última escena</button>
+            <button id="logoutBtn" style="margin-top: 20px; background: #331111;">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+        // --- CONFIGURACIÓN THREE.JS ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        document.body.appendChild(renderer.domElement);
+
+        const room = new THREE.Mesh(
+            new THREE.BoxGeometry(10, 10, 10),
+            new THREE.MeshStandardMaterial({ color: 0xcccccc, side: THREE.BackSide, roughness: 1 })
+        );
+        scene.add(room);
+
+        const bulbLight = new THREE.PointLight(0xffffff, 0, 100, 2);
+        bulbLight.position.set(0, 4, 0);
+        scene.add(bulbLight);
+
+        const bulbMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.1, 16, 16),
+            new THREE.MeshBasicMaterial({ color: 0x444444 })
+        );
+        bulbMesh.position.copy(bulbLight.position);
+        scene.add(bulbMesh);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.01));
+        camera.position.set(0, 0, 8);
+
+        // --- LÓGICA DEL SIMULADOR ---
+        let lightOn = false, watts = 10, mode = 'radiante', selectedColor = 'white', sensibilidad = 1.0;
+        const coeficientes = { white: 1.0, red: 0.752, green: 0.853, blue: 0.997 };
+        let authToken = null;
+
+        function updateIllumination() {
+            document.getElementById('unit').innerText = (mode === 'luminosa') ? "lm" : "W";
+            if (!lightOn) {
+                bulbLight.intensity = 0;
+                bulbMesh.material.color.setHex(0x444444);
+                return;
+            }
+            const coef = coeficientes[selectedColor];
+            if(selectedColor === 'red') bulbLight.color.setHex(0xff0000);
+            else if(selectedColor === 'green') bulbLight.color.setHex(0x00ff00);
+            else if(selectedColor === 'blue') bulbLight.color.setHex(0x0000ff);
+            else bulbLight.color.setHex(0xffffff);
+
+            let baseIntensity = watts * 2.0 * coef;
+            bulbLight.intensity = (mode === 'luminosa') ? baseIntensity * sensibilidad : baseIntensity;
+            bulbMesh.material.color.copy(bulbLight.color);
+        }
+
+        // --- CAMBIO REALIZADO AQUÍ: DE LOCALHOST A RENDER ---
+        const API_URL = "https://landingpage-lightrender.onrender.com/api";
+
+        // 1. LOGIN
+        document.getElementById('loginBtn').onclick = async () => {
+            const user = document.getElementById('userInp').value;
+            const password = document.getElementById('passInp').value;
+            if(user === "admin" && password === "12345") {
+                authToken = "jwt-simulado-secret-123";
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dbSection').classList.remove('hidden');
+                alert("Modo Admin activado.");
+            } else { alert("Usuario o clave incorrectos."); }
+        };
+
+        // 2. GUARDAR
+        document.getElementById('saveBtn').onclick = async () => {
+            const nombre = document.getElementById('sceneName').value;
+            if(!nombre) return alert("Ponle un nombre a la escena");
+
+            const datosEscena = { 
+                nombre, 
+                watts: Number(watts), 
+                mode, 
+                selectedColor, 
+                sensibilidad: Number(sensibilidad) 
+            };
+
+            try {
+                await fetch(`${API_URL}/escenas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': authToken },
+                    body: JSON.stringify(datosEscena)
+                });
+                alert("Escena guardada");
+            } catch (err) { alert("Error al guardar"); }
+        };
+
+        // 3. CARGAR
+        document.getElementById('loadBtn').onclick = async () => {
+            try {
+                const response = await fetch(`${API_URL}/escenas`);
+                const escenas = await response.json();
+                if(escenas.length > 0) {
+                    const ultima = escenas[escenas.length - 1];
+                    
+                    watts = ultima.watts;
+                    mode = ultima.mode;
+                    selectedColor = ultima.selectedColor;
+                    sensibilidad = ultima.sensibilidad || 1.0;
+                    
+                    document.getElementById('wattRange').value = watts;
+                    document.getElementById('wattVal').innerText = watts;
+                    document.getElementById('calcMode').value = mode;
+                    document.getElementById('lightColor').value = selectedColor;
+                    document.getElementById('sensRange').value = sensibilidad;
+                    document.getElementById('sensVal').innerText = sensibilidad;
+                    document.getElementById('sensContainer').style.display = (mode === 'luminosa') ? 'block' : 'none';
+
+                    lightOn = true;
+                    const toggleBtn = document.getElementById('toggleBtn');
+                    toggleBtn.innerText = "Apagar Luz";
+                    toggleBtn.style.background = "#ff8800";
+                    
+                    updateIllumination();
+                    alert(`Escena "${ultima.nombre}" cargada con éxito.`);
+                }
+            } catch (err) { alert("Error al conectar con el servidor."); }
+        };
+
+        document.getElementById('logoutBtn').onclick = () => {
+            authToken = null;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dbSection').classList.add('hidden');
+        };
+
+        // --- LISTENERS UI ---
+        document.getElementById('toggleBtn').onclick = (e) => {
+            lightOn = !lightOn;
+            e.target.innerText = lightOn ? "Apagar Luz" : "Encender Luz";
+            e.target.style.background = lightOn ? "#ff8800" : "#444";
+            updateIllumination();
+        };
+        document.getElementById('wattRange').oninput = (e) => {
+            watts = e.target.value;
+            document.getElementById('wattVal').innerText = watts;
+            updateIllumination();
+        };
+        document.getElementById('wattRange').onchange = (e) => {
+            watts = e.target.value;
+            updateIllumination();
+        };
+        document.getElementById('sensRange').oninput = (e) => {
+            sensibilidad = e.target.value;
+            document.getElementById('sensVal').innerText = sensibilidad;
+            updateIllumination();
+        };
+        document.getElementById('lightColor').onchange = (e) => {
+            selectedColor = e.target.value;
+            updateIllumination();
+        };
+        document.getElementById('calcMode').onchange = (e) => {
+            mode = e.target.value;
+            document.getElementById('sensContainer').style.display = (mode === 'luminosa') ? 'block' : 'none';
+            updateIllumination();
+        };
+
+        function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); }
+        animate();
+    </script>
+</body>
+</html>

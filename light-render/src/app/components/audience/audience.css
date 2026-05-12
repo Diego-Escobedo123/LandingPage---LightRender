@@ -1,0 +1,88 @@
+.audience-wrap {
+  background: #060d22;
+  padding: 5rem 0;
+}
+
+.audience-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+.section-kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #f5a623;
+  margin-bottom: 0.75rem;
+}
+
+.section-h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.split-copy p {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+}
+
+.targets {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.target-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.target-item:hover {
+  background: rgba(245, 166, 35, 0.06);
+  border-color: rgba(245, 166, 35, 0.2);
+}
+
+.target-icon {
+  font-size: 22px;
+  min-width: 36px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.target-item h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.target-item p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .audience-inner { padding: 0 1.5rem; }
+  .split { grid-template-columns: 1fr; gap: 2rem; }
+}
